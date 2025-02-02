@@ -187,7 +187,7 @@
       messageInput.value = '';
       typingIndicator.style.display = 'block';
       try {
-        const response = await fetch(`https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(message)}&model=Meta-Llama-3.1-70B`);
+        const response = await fetch(`https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(message)}&model=gpt-4o-mini`);
         const data = await response.json();
         typingIndicator.style.display = 'none';
         if (data.successful === 'success' && data.response) {
