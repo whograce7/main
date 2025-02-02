@@ -166,8 +166,8 @@
 
   <!-- Kontrol Musik -->
   <div id="music-controls">
-    <button id="play-button">play music</button>
-    <button id="stop-button">suport</button>
+    <button id="play-button">Play Song</button>
+    <button id="stop-button">Contact Developer</button>
   </div>
 
   <script>
@@ -178,7 +178,7 @@
     const playButton = document.getElementById('play-button');
     const stopButton = document.getElementById('stop-button');
 
-    let music = new Audio('https://b.top4top.io/m_3307bbz4v1.mp3');
+    let music = new Audio('https://open.spotify.com/track/4gvwDCbQy1Zb6PqR5c5dyV?si=OpNcUIFFRGaJwwD6uwr6DQ');
 
     async function sendMessage() {
       const message = messageInput.value.trim();
@@ -187,7 +187,7 @@
       messageInput.value = '';
       typingIndicator.style.display = 'block';
       try {
-        const response = await fetch(`https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(message)}&model=gpt-4o-mini`);
+        const response = await fetch(`https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(message)}&model=Meta-Llama-3.1-70B`);
         const data = await response.json();
         typingIndicator.style.display = 'none';
         if (data.successful === 'success' && data.response) {
