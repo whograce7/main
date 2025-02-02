@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chloe AI Dashboard</title>
+  <link rel="icon" href="https://i.ibb.co.com/wZYfkqv4/7e718644-deb7-40ad-93b3-1ed03fa64a2a.jpg">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      min-height: 100vh;
+      background-image: url('https://i.ibb.co.com/YFq0p4hJ/PORTO-Taekook.jpg');
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      flex-direction: column;
+      position: relative;
+    }
+    .chat-container {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .chat-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 15px;
+    }
+    .bot-avatar {
+      width: 60px;
+      height: 60px;
+      margin-right: 15px;
+    }
+    .bot-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+    }
+    .chat-header h1 {
+      color: white;
+      font-size: 1.5rem;
+    }
+    .chat-messages {
+      height: 400px;
+      overflow-y: auto;
+      padding: 15px;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      margin-bottom: 15px;
+    }
+    .message {
+      margin-bottom: 15px;
+      display: flex;
+    }
+    .user-message {
+      justify-content: flex-end;
+    }
+    .bot-message {
+      justify-content: flex-start;
+    }
+    .message-content {
+      padding: 12px 18px;
+      border-radius: 18px;
+      max-width: 75%;
+      font-size: 1rem;
+    }
+    .user-message .message-content {
+      background: #1E90FF;
+      color: white;
+    }
+    .bot-message .message-content {
+      background: #444;
+      color: white;
+    }
+    .input-container {
+      display: flex;
+      gap: 10px;
+    }
+    #message-input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 20px;
+      background: #444;
+      color: white;
+    }
+    #send-button {
+      background: #1E90FF;  
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .typing-indicator {
+      display: none;
+      color: #aaa;
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+
+    /* Animasi copyright */
+    .copyright {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      color: white;
+    }
+
+    @keyframes text-scroll {
+      0% { opacity: 0; transform: translateX(-100%); }
+      25% { opacity: 1; transform: translateX(0); }
+      50% { opacity: 1; transform: translateX(100%); }
+      75% { opacity: 0; transform: translateX(0); }
+      100% { opacity: 0; transform: translateX(-100%); }
+    }
+
+  
+    #music-controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    #play-button, #stop-button {
+      padding: 10px 20px;
+      background-color: #1E90FF;  
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    #play-button:hover, #stop-button:hover {
+      background-color: #187bcd;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="bot-avatar">
+        <img src="https://i.ibb.co.com/wZYfkqv4/7e718644-deb7-40ad-93b3-1ed03fa64a2a.jpg">
+      </div>
+      <h1>Chloe AI</h1>
+    </div>
+    <div id="typing-indicator" class="typing-indicator">Chloe Pawapua Sedang Mengetik...</div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="input-container">
+      <input id="message-input" type="text" placeholder="Ketik pertanyaan..." autocomplete="off">
+      <button id="send-button">Kirim</button>
+    </div>
+  </div>
+  
+  <div class="copyright">&copy; </div>
+
+  <!-- Kontrol Musik -->
+  <div id="music-controls">
+    <button id="play-button">play music</button>
+    <button id="stop-button">suport</button>
+  </div>
+
+  <script>
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const chatMessages = document.getElementById('chat-messages');
+    const typingIndicator = document.getElementById('typing-indicator');
+    const playButton = document.getElementById('play-button');
+    const stopButton = document.getElementById('stop-button');
+
+    let music = new Audio('https://b.top4top.io/m_3307bbz4v1.mp3');
+
+    async function sendMessage() {
+      const message = messageInput.value.trim();
+      if (!message) return;
+      addMessage(message, 'user');
+      messageInput.value = '';
+      typingIndicator.style.display = 'block';
+      try {
+        const response = await fetch(`https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(message)}&model=gpt-4o-mini`);
+        const data = await response.json();
+        typingIndicator.style.display = 'none';
+        if (data.successful === 'success' && data.response) {
+          addMessage(data.response, 'bot');
+        } else {
+          addMessage('Maaf, terjadi kesalahan. Coba lagi.', 'bot');
+        }
+      } catch (error) {
+        typingIndicator.style.display = 'none';
+        addMessage('Maaf, terjadi kesalahan. Coba lagi.', 'bot');
+      }
+    }
+
+    function addMessage(text, sender) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message', `${sender}-message`);
+      const messageContent = document.createElement('div');
+      messageContent.classList.add('message-content');
+      messageContent.textContent = text;
+      messageDiv.appendChild(messageContent);
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+  
+    playButton.addEventListener('click', () => {
+      music.play();
+    });
+
+    stopButton.addEventListener('click', () => {
+  window.open('https://wa.me/6285939352076?text=Halo%20%bang%20Tamvan,%20Saya%20ingin%20memberikan%20rating%20atau%20saran.', '_blank');
+});
+
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    addMessage('Hawwo onichan! Ada yang bisa Chloe bantu??', 'bot');
+  </script>
+</body>
+</html>
